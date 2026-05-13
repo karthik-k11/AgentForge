@@ -12,7 +12,14 @@ def planner_agent(user_request):
     User Request:
     {user_request}
 
-    Create a numbered execution plan.
+    Return ONLY short execution steps.
+
+    Rules:
+    - Keep steps short
+    - No explanations
+    - No paragraphs
+    - Maximum 6 steps
+    - Focus on software debugging workflow
     """
 
     response = ask_llm(prompt)
