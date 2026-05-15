@@ -1,4 +1,5 @@
 from planner import planner_agent
+from tasks import generate_tasks
 
 
 def main():
@@ -11,8 +12,12 @@ def main():
 
     plan = planner_agent(user_request)
 
-    print("=== EXECUTION PLAN ===\n")
-    print(plan)
+    tasks = generate_tasks(plan)
+
+    print("=== TASK LIST ===\n")
+
+    for index, task in enumerate(tasks, start=1):
+        print(f"{index}. {task}")
 
 
 if __name__ == "__main__":
