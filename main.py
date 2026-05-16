@@ -2,6 +2,7 @@ from planner import planner_agent
 from tasks import generate_tasks
 from explorer import explorer_agent
 from debugger import debugger_agent
+from codegen import code_generator_agent
 
 
 def main():
@@ -40,6 +41,12 @@ NameError: name 'username' is not defined
     debug_result = debugger_agent(sample_error)
 
     print(debug_result)
+
+    print("\n=== CODE GENERATOR AGENT ===\n")
+
+    generated_fix = code_generator_agent(sample_error)
+
+    print(generated_fix)
 
 
 if __name__ == "__main__":
