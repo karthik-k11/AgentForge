@@ -1,5 +1,6 @@
 from planner import planner_agent
 from tasks import generate_tasks
+from explorer import explorer_agent
 
 
 def main():
@@ -18,6 +19,13 @@ def main():
 
     for index, task in enumerate(tasks, start=1):
         print(f"{index}. {task}")
+
+    print("\n=== EXPLORER AGENT ===\n")
+
+    files = explorer_agent("sample_project")
+
+    for file in files:
+        print(file)
 
 
 if __name__ == "__main__":
