@@ -34,7 +34,7 @@ def main():
     print("\n=== EXECUTOR AGENT ===\n")
 
     execution_result = executor_agent(
-        "sample_project/broken_script.py"
+        "sample_project/app.py"
     )
 
     print("STDOUT:\n")
