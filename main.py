@@ -1,9 +1,10 @@
 from planner import planner_agent
 from tasks import generate_tasks
 from explorer import explorer_agent
+from executor import executor_agent
 from debugger import debugger_agent
 from codegen import code_generator_agent
-from executor import executor_agent
+from reviewer import reviewer_agent
 
 
 def main():
@@ -57,6 +58,22 @@ def main():
     )
 
     print(generated_fix)
+
+    print("\n=== REVIEWER AGENT ===\n")
+
+    review_result = reviewer_agent(
+        execution_result["stderr"],
+        generated_fix
+    )
+
+    print(review_result)
+
+    print("\n=== FINAL DECISION ===\n")
+
+    if "ACCEPT" in review_result:
+        print("Fix approved by Reviewer Agent")
+    else:
+        print("Fix rejected. Retry required")
 
 
 if __name__ == "__main__":
