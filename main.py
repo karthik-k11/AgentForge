@@ -3,6 +3,7 @@ from tasks import generate_tasks
 from explorer import explorer_agent
 from debugger import debugger_agent
 from codegen import code_generator_agent
+from executor import executor_agent
 
 
 def main():
@@ -29,22 +30,31 @@ def main():
     for file in files:
         print(file)
 
+    print("\n=== EXECUTOR AGENT ===\n")
+
+    execution_result = executor_agent(
+        "sample_project/broken_script.py"
+    )
+
+    print("STDOUT:\n")
+    print(execution_result["stdout"])
+
+    print("STDERR:\n")
+    print(execution_result["stderr"])
+
     print("\n=== DEBUGGER AGENT ===\n")
 
-    sample_error = """
-Traceback (most recent call last):
-  File "app.py", line 10, in <module>
-    print(username)
-NameError: name 'username' is not defined
-"""
-
-    debug_result = debugger_agent(sample_error)
+    debug_result = debugger_agent(
+        execution_result["stderr"]
+    )
 
     print(debug_result)
 
     print("\n=== CODE GENERATOR AGENT ===\n")
 
-    generated_fix = code_generator_agent(sample_error)
+    generated_fix = code_generator_agent(
+        execution_result["stderr"]
+    )
 
     print(generated_fix)
 
