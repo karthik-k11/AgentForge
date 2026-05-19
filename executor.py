@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 
 def executor_agent(file_path):
@@ -6,7 +7,7 @@ def executor_agent(file_path):
     try:
 
         result = subprocess.run(
-            ["python", file_path],
+            [sys.executable, file_path],
             capture_output=True,
             text=True
         )
