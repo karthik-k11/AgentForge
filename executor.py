@@ -9,12 +9,20 @@ def executor_agent(file_path):
         result = subprocess.run(
             [sys.executable, file_path],
             capture_output=True,
-            text=True
+            text=True,
+            timeout=5
         )
 
         return {
             "stdout": result.stdout,
             "stderr": result.stderr
+        }
+
+    except subprocess.TimeoutExpired:
+
+        return {
+            "stdout": "",
+            "stderr": "Process execution timed out."
         }
 
     except Exception as error:
