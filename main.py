@@ -5,6 +5,7 @@ from executor import executor_agent
 from debugger import debugger_agent
 from codegen import code_generator_agent
 from reviewer import reviewer_agent
+from file_writer import write_fix_to_file
 
 
 def main():
@@ -31,11 +32,11 @@ def main():
     for file in files:
         print(file)
 
+    target_file = "sample_project/app.py"
+
     print("\n=== EXECUTOR AGENT ===\n")
 
-    execution_result = executor_agent(
-        "sample_project/app.py"
-    )
+    execution_result = executor_agent(target_file)
 
     print("STDOUT:\n")
     print(execution_result["stdout"])
@@ -68,12 +69,22 @@ def main():
 
     print(review_result)
 
-    print("\n=== FINAL DECISION ===\n")
-
     if "ACCEPT" in review_result:
-        print("Fix approved by Reviewer Agent")
+
+        print("\n=== FILE WRITER ===\n")
+
+        backup_file = write_fix_to_file(
+            target_file,
+            generated_fix
+        )
+
+        print(f"Backup created: {backup_file}")
+
+        print("Generated fix written successfully")
+
     else:
-        print("Fix rejected. Retry required")
+
+        print("\nFix rejected. Retry required")
 
 
 if __name__ == "__main__":
