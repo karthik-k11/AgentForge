@@ -1,4 +1,5 @@
 from llm import ask_llm
+from utils import clean_code_response
 
 
 def code_generator_agent(error_traceback):
@@ -8,13 +9,12 @@ def code_generator_agent(error_traceback):
 
     A Python application failed.
 
-    Analyze the traceback and generate
-    corrected Python code.
+    Analyze the traceback and generate corrected Python code.
 
-    Return:
-    - Fixed code only
-    - No explanations
-    - No markdown
+    Return ONLY raw Python code.
+
+    No markdown.
+    No explanations.
 
     Traceback:
     {error_traceback}
@@ -22,4 +22,6 @@ def code_generator_agent(error_traceback):
 
     response = ask_llm(prompt)
 
-    return response
+    cleaned_code = clean_code_response(response)
+
+    return cleaned_code
