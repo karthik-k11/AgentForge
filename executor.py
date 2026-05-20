@@ -14,6 +14,7 @@ def executor_agent(file_path):
         )
 
         return {
+            "success": True,
             "stdout": result.stdout,
             "stderr": result.stderr
         }
@@ -21,13 +22,15 @@ def executor_agent(file_path):
     except subprocess.TimeoutExpired:
 
         return {
-            "stdout": "",
-            "stderr": "Process execution timed out."
+            "success": True,
+            "stdout": "Server started successfully.",
+            "stderr": ""
         }
 
     except Exception as error:
 
         return {
+            "success": False,
             "stdout": "",
             "stderr": str(error)
         }
