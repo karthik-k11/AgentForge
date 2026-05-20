@@ -50,16 +50,17 @@ def main():
         print(execution_result["stderr"])
 
         ##Success condition
-        if execution_result["stderr"] == "":
+        if execution_result["success"]:
 
-            print("\nApplication executed successfully ✅")
+            print("\nApplication executed successfully")
 
             break
 
         print("\n=== DEBUGGER AGENT ===\n")
 
         debug_result = debugger_agent(
-            execution_result["stderr"]
+            execution_result["stderr"],
+            files[0]["content"]
         )
 
         print(debug_result)
