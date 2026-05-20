@@ -1,3 +1,5 @@
+import json
+
 from llm import ask_llm
 
 
@@ -6,22 +8,24 @@ def planner_agent(user_request):
     prompt = f"""
     You are a senior AI Planning Agent.
 
-    Your job is to break software problems
-    into clear execution steps.
+    Break the software problem into short debugging tasks.
+
+    Return ONLY valid JSON.
+
+    Example format:
+
+    {{
+        "tasks": [
+            "Check logs",
+            "Run debug mode",
+            "Verify dependencies"
+        ]
+    }}
 
     User Request:
     {user_request}
-
-    Return ONLY short execution steps.
-
-    Rules:
-    - Keep steps short
-    - No explanations
-    - No paragraphs
-    - Maximum 6 steps
-    - Focus on software debugging workflow
     """
 
     response = ask_llm(prompt)
 
-    return response
+    return json.loads(response)
