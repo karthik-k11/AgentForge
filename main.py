@@ -18,7 +18,7 @@ def main():
 
     plan = planner_agent(user_request)
 
-    tasks = generate_tasks(plan)
+    tasks = plan["tasks"]
 
     print("=== TASK LIST ===\n")
 
