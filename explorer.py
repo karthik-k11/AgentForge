@@ -1,6 +1,5 @@
 import os
 
-##Scans project folders & returns file list.
 
 def explorer_agent(project_path):
 
@@ -14,6 +13,22 @@ def explorer_agent(project_path):
 
                 full_path = os.path.join(root, file)
 
-                discovered_files.append(full_path)
+                try:
+
+                    with open(full_path, "r", encoding="utf-8") as code_file:
+
+                        code_content = code_file.read()
+
+                    discovered_files.append({
+                        "file_path": full_path,
+                        "content": code_content
+                    })
+
+                except Exception as error:
+
+                    discovered_files.append({
+                        "file_path": full_path,
+                        "content": f"Error reading file: {error}"
+                    })
 
     return discovered_files
