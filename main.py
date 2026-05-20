@@ -34,57 +34,74 @@ def main():
 
     target_file = "sample_project/app.py"
 
-    print("\n=== EXECUTOR AGENT ===\n")
+    max_retries = 2
 
-    execution_result = executor_agent(target_file)
+    retry_count = 0
 
-    print("STDOUT:\n")
-    print(execution_result["stdout"])
+    while retry_count < max_retries:
 
-    print("STDERR:\n")
-    print(execution_result["stderr"])
+        print(f"\n=== EXECUTION ATTEMPT {retry_count + 1} ===\n")
 
-    print("\n=== DEBUGGER AGENT ===\n")
+        execution_result = executor_agent(target_file)
 
-    debug_result = debugger_agent(
-        execution_result["stderr"]
-    )
+        print("STDOUT:\n")
+        print(execution_result["stdout"])
 
-    print(debug_result)
+        print("STDERR:\n")
+        print(execution_result["stderr"])
 
-    print("\n=== CODE GENERATOR AGENT ===\n")
+        ##Success condition
+        if execution_result["stderr"] == "":
 
-    generated_fix = code_generator_agent(
-        execution_result["stderr"]
-    )
+            print("\nApplication executed successfully ✅")
 
-    print(generated_fix)
+            break
 
-    print("\n=== REVIEWER AGENT ===\n")
+        print("\n=== DEBUGGER AGENT ===\n")
 
-    review_result = reviewer_agent(
-        execution_result["stderr"],
-        generated_fix
-    )
+        debug_result = debugger_agent(
+            execution_result["stderr"]
+        )
 
-    print(review_result)
+        print(debug_result)
 
-    if "ACCEPT" in review_result:
+        print("\n=== CODE GENERATOR AGENT ===\n")
 
-        print("\n=== FILE WRITER ===\n")
+        generated_fix = code_generator_agent(
+            execution_result["stderr"]
+        )
 
-        backup_file = write_fix_to_file(
-            target_file,
+        print(generated_fix)
+
+        print("\n=== REVIEWER AGENT ===\n")
+
+        review_result = reviewer_agent(
+            execution_result["stderr"],
             generated_fix
         )
 
-        print(f"Backup created: {backup_file}")
+        print(review_result)
 
-        print("Generated fix written successfully")
+        if "ACCEPT" in review_result:
 
-    else:
+            print("\n=== FILE WRITER ===\n")
 
-        print("\nFix rejected. Retry required")
+            backup_file = write_fix_to_file(
+                target_file,
+                generated_fix
+            )
+
+            print(f"Backup created: {backup_file}")
+
+            print("Generated fix written successfully")
+
+        else:
+
+            print("\nFix rejected. Retry required")
+
+        retry_count += 1
+
+    print("\n=== AGENTFORGE FINISHED ===\n")
 
 
 if __name__ == "__main__":
