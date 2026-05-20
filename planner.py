@@ -1,6 +1,7 @@
 import json
 
 from llm import ask_llm
+from utils import clean_json_response
 
 
 def planner_agent(user_request):
@@ -28,16 +29,18 @@ def planner_agent(user_request):
 
     response = ask_llm(prompt)
 
+    cleaned_response = clean_json_response(response)
+
     print("\nRAW PLANNER RESPONSE:\n")
-    print(response)
+    print(cleaned_response)
 
     try:
 
-        return json.loads(response)
+        return json.loads(cleaned_response)
 
     except json.JSONDecodeError:
 
-        print("\nInvalid JSON returned by Planner Agent ⚠️")
+        print("\nInvalid JSON returned by Planner Agent")
 
         return {
             "tasks": [
