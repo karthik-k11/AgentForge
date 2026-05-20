@@ -29,7 +29,7 @@ def main():
     files = explorer_agent("sample_project")
 
     for file in files:
-        print(file)
+        print(file["file_path"])
 
     target_file = "sample_project/app.py"
 
