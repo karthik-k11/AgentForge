@@ -12,7 +12,7 @@ def planner_agent(user_request):
 
     Return ONLY valid JSON.
 
-    Example format:
+    Example:
 
     {{
         "tasks": [
@@ -28,4 +28,19 @@ def planner_agent(user_request):
 
     response = ask_llm(prompt)
 
-    return json.loads(response)
+    print("\nRAW PLANNER RESPONSE:\n")
+    print(response)
+
+    try:
+
+        return json.loads(response)
+
+    except json.JSONDecodeError:
+
+        print("\nInvalid JSON returned by Planner Agent ⚠️")
+
+        return {
+            "tasks": [
+                "Fallback task: Inspect application manually"
+            ]
+        }
