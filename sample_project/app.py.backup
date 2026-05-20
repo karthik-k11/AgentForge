@@ -10,3 +10,35 @@ def home():
 
 if __name__ == "__main__":
     app.run()
+
+# ===== AI GENERATED PATCH =====
+
+import signal
+
+class TimeoutError(Exception): 
+    pass 
+
+def timeout_handler(signum, frame):
+    raise TimeoutError
+
+def run_with_timeout(func, timeout):
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout)
+    try:
+        return func()
+    finally:
+        signal.alarm(0)
+
+def main():
+    try:
+        result = run_with_timeout(your_function, 10)  # replace your_function with the actual function
+    except TimeoutError:
+        print("Process execution timed out")
+
+def your_function():
+    # replace this with the actual function that was timing out
+    while True:
+        pass
+
+if __name__ == "__main__":
+    main()
