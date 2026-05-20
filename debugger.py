@@ -1,12 +1,14 @@
 from llm import ask_llm
 
 
-def debugger_agent(error_traceback):
+def debugger_agent(error_traceback, source_code):
 
     prompt = f"""
     You are a senior AI Debugger Agent.
 
-    Analyze the following Python traceback.
+    Analyze the runtime error carefully.
+
+    Also inspect the provided source code.
 
     Explain:
     1. What failed
@@ -15,8 +17,11 @@ def debugger_agent(error_traceback):
 
     Keep explanation short and clear.
 
-    Traceback:
+    Runtime Error:
     {error_traceback}
+
+    Source Code:
+    {source_code}
     """
 
     response = ask_llm(prompt)
