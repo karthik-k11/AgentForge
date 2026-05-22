@@ -26,7 +26,11 @@ def main():
 
     print("\n=== EXPLORER AGENT ===\n")
 
-    files = explorer_agent("sample_project")
+    explorer_data = explorer_agent("sample_project")
+
+    files = explorer_data["files"]
+
+    project_context = explorer_data["project_context"]
 
     for file in files:
         print(file["file_path"])
