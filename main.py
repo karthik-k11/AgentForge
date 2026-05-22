@@ -64,7 +64,7 @@ def main():
 
         debug_result = debugger_agent(
             execution_result["stderr"],
-            files[0]["content"]
+            project_context
         )
 
         print(debug_result)
