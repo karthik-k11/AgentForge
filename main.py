@@ -27,9 +27,9 @@ def main():
     print("\n=== EXPLORER AGENT ===\n")
 
     explorer_data = explorer_agent(
-    "sample_project",
-    user_request
-)
+        "sample_project",
+        user_request
+    )
 
     files = explorer_data["files"]
 
