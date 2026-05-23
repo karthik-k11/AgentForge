@@ -1,11 +1,13 @@
 import os
 
 
-def explorer_agent(project_path):
+def explorer_agent(project_path, user_request):
 
     discovered_files = []
 
     combined_context = ""
+
+    request_keywords = user_request.lower().split()
 
     for root, dirs, files in os.walk(project_path):
 
@@ -21,27 +23,48 @@ def explorer_agent(project_path):
 
                         code_content = code_file.read()
 
+                    relevance_score = 0
+
+                    for keyword in request_keywords:
+
+                        if keyword in code_content.lower():
+
+                            relevance_score += 1
+
                     discovered_files.append({
                         "file_path": full_path,
-                        "content": code_content
+                        "content": code_content,
+                        "relevance_score": relevance_score
                     })
-
-                    combined_context += f"""
-
-# FILE: {full_path}
-
-{code_content}
-
-"""
 
                 except Exception as error:
 
                     discovered_files.append({
                         "file_path": full_path,
-                        "content": f"Error reading file: {error}"
+                        "content": f"Error reading file: {error}",
+                        "relevance_score": 0
                     })
 
+    ##Sort most relevant files first
+    discovered_files.sort(
+        key=lambda file: file["relevance_score"],
+        reverse=True
+    )
+
+    ##Select top 3 relevant files
+    top_files = discovered_files[:3]
+
+    for file in top_files:
+
+        combined_context += f"""
+
+# FILE: {file["file_path"]}
+
+{file["content"]}
+
+"""
+
     return {
-        "files": discovered_files,
+        "files": top_files,
         "project_context": combined_context
     }
