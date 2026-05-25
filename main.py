@@ -5,6 +5,7 @@ from debugger import debugger_agent
 from codegen import code_generator_agent
 from reviewer import reviewer_agent
 from file_writer import write_fix_to_file
+from router import execute_step
 
 
 def main():
@@ -29,19 +30,31 @@ def main():
         f"{step['action']}"
         )
 
-    print("\n=== EXPLORER AGENT ===\n")
+    files = []
+    project_context = ""
 
-    explorer_data = explorer_agent(
-        "sample_project",
-        user_request
-    )
+    print("\n=== EXECUTING PLAN ===\n")
 
-    files = explorer_data["files"]
+    for step in steps:
 
-    project_context = explorer_data["project_context"]
+        result = execute_step(
+            step,
+            user_request,
+            project_context,
+            {"stderr": ""}
+        )
 
-    for file in files:
-        print(file["file_path"])
+        if step["agent"] == "Explorer":
+
+            files = result["files"]
+
+            project_context = result["project_context"]
+
+            print("\n=== EXPLORER AGENT ===\n")
+
+            for file in files:
+
+                print(file["file_path"])
 
     target_file = "sample_project/app.py"
 
