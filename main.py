@@ -17,12 +17,17 @@ def main():
 
     plan = planner_agent(user_request)
 
-    tasks = plan["tasks"]
+    steps = plan["steps"]
 
-    print("=== TASK LIST ===\n")
+    print("=== EXECUTION PLAN ===\n")
 
-    for index, task in enumerate(tasks, start=1):
-        print(f"{index}. {task}")
+    for index, step in enumerate(steps, start=1):
+
+        print(
+        f"{index}. "
+        f"[{step['agent']}] "
+        f"{step['action']}"
+        )
 
     print("\n=== EXPLORER AGENT ===\n")
 
