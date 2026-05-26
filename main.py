@@ -76,10 +76,6 @@ def main():
                     "successfully"
                 )
 
-                print(
-                    "\n=== AGENTFORGE FINISHED ===\n"
-                )
-
                 break
 
         ##Debugger Output
