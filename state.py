@@ -1,0 +1,18 @@
+def create_workflow_state():
+
+    return {
+
+        "user_request": "",
+
+        "project_context": "",
+
+        "files": [],
+
+        "execution_result": {},
+
+        "debug_analysis": "",
+
+        "generated_fix": "",
+
+        "review_result": ""
+    }
