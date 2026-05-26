@@ -1,14 +1,11 @@
 from explorer import explorer_agent
 from executor import executor_agent
 from debugger import debugger_agent
+from codegen import code_generator_agent
+from reviewer import reviewer_agent
 
 
-def execute_step(
-    step,
-    user_request,
-    project_context,
-    execution_result
-):
+def execute_step(step, workflow_state):
 
     agent_name = step["agent"]
 
@@ -18,23 +15,87 @@ def execute_step(
 
     if agent_name == "Explorer":
 
-        return explorer_agent(
+        result = explorer_agent(
             "sample_project",
-            user_request
+            workflow_state["user_request"]
         )
+
+        workflow_state["files"] = result["files"]
+
+        workflow_state["project_context"] = result[
+            "project_context"
+        ]
+
+        return result
 
     elif agent_name == "Executor":
 
-        return executor_agent(
+        result = executor_agent(
             "sample_project/app.py"
         )
 
+        workflow_state["execution_result"] = result
+
+        return result
+
     elif agent_name == "Debugger":
 
-        return debugger_agent(
-            execution_result["stderr"],
-            project_context
+        if not workflow_state["execution_result"]:
+
+            print(
+                "Skipping Debugger: "
+                "No execution result available."
+            )
+
+            return None
+
+        result = debugger_agent(
+            workflow_state["execution_result"]["stderr"],
+            workflow_state["project_context"]
         )
+
+        workflow_state["debug_analysis"] = result
+
+        return result
+
+    elif agent_name == "CodeGenerator":
+
+        if not workflow_state["execution_result"]:
+
+            print(
+                "Skipping CodeGenerator: "
+                "No execution result available."
+            )
+
+            return None
+
+        result = code_generator_agent(
+            workflow_state["execution_result"]["stderr"]
+        )
+
+        workflow_state["generated_fix"] = result
+
+        return result
+
+    elif agent_name == "Reviewer":
+
+        if not workflow_state["generated_fix"]:
+
+            print(
+                "Skipping Reviewer: "
+                "No generated fix available."
+            )
+
+            return None
+
+        result = reviewer_agent(
+            workflow_state["execution_result"]["stderr"],
+            workflow_state["generated_fix"]
+        )
+
+        workflow_state["review_result"] = result
+
+        return result
 
     else:
 
