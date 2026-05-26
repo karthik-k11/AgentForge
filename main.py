@@ -1,20 +1,21 @@
 from planner import planner_agent
-from explorer import explorer_agent
-from executor import executor_agent
-from debugger import debugger_agent
-from codegen import code_generator_agent
-from reviewer import reviewer_agent
-from file_writer import write_fix_to_file
 from router import execute_step
+from state import create_workflow_state
 
 
 def main():
 
     print("\n=== AgentForge ===\n")
 
-    user_request = input("Describe your software problem:\n\n> ")
+    user_request = input(
+        "Describe your software problem:\n\n> "
+    )
 
     print("\nGenerating plan...\n")
+
+    workflow_state = create_workflow_state()
+
+    workflow_state["user_request"] = user_request
 
     plan = planner_agent(user_request)
 
@@ -25,106 +26,90 @@ def main():
     for index, step in enumerate(steps, start=1):
 
         print(
-        f"{index}. "
-        f"[{step['agent']}] "
-        f"{step['action']}"
+            f"{index}. "
+            f"[{step['agent']}] "
+            f"{step['action']}"
         )
-
-    files = []
-    project_context = ""
 
     print("\n=== EXECUTING PLAN ===\n")
 
     for step in steps:
 
-        result = execute_step(
+        agent_name = step["agent"]
+
+        execute_step(
             step,
-            user_request,
-            project_context,
-            {"stderr": ""}
+            workflow_state
         )
 
-        if step["agent"] == "Explorer":
-
-            files = result["files"]
-
-            project_context = result["project_context"]
+        ##Explorer Output
+        if agent_name == "Explorer":
 
             print("\n=== EXPLORER AGENT ===\n")
 
-            for file in files:
+            for file in workflow_state["files"]:
 
                 print(file["file_path"])
 
-    target_file = "sample_project/app.py"
+        ##Executor Output
+        elif agent_name == "Executor":
 
-    max_retries = 2
+            print("\n=== EXECUTOR AGENT ===\n")
 
-    retry_count = 0
+            print("STDOUT:\n")
 
-    while retry_count < max_retries:
-
-        print(f"\n=== EXECUTION ATTEMPT {retry_count + 1} ===\n")
-
-        execution_result = executor_agent(target_file)
-
-        print("STDOUT:\n")
-        print(execution_result["stdout"])
-
-        print("STDERR:\n")
-        print(execution_result["stderr"])
-
-        ##Success condition
-        if execution_result["success"]:
-
-            print("\nApplication executed successfully")
-
-            break
-
-        print("\n=== DEBUGGER AGENT ===\n")
-
-        debug_result = debugger_agent(
-            execution_result["stderr"],
-            project_context
-        )
-
-        print(debug_result)
-
-        print("\n=== CODE GENERATOR AGENT ===\n")
-
-        generated_fix = code_generator_agent(
-            execution_result["stderr"]
-        )
-
-        print(generated_fix)
-
-        print("\n=== REVIEWER AGENT ===\n")
-
-        review_result = reviewer_agent(
-            execution_result["stderr"],
-            generated_fix
-        )
-
-        print(review_result)
-
-        if "ACCEPT" in review_result:
-
-            print("\n=== FILE WRITER ===\n")
-
-            backup_file = write_fix_to_file(
-                target_file,
-                generated_fix
+            print(
+                workflow_state["execution_result"]["stdout"]
             )
 
-            print(f"Backup created: {backup_file}")
+            print("STDERR:\n")
 
-            print("Generated fix written successfully")
+            print(
+                workflow_state["execution_result"]["stderr"]
+            )
 
-        else:
+            ##Success condition
+            if workflow_state["execution_result"]["success"]:
 
-            print("\nFix rejected. Retry required")
+                print(
+                    "\nApplication executed "
+                    "successfully"
+                )
 
-        retry_count += 1
+                print(
+                    "\n=== AGENTFORGE FINISHED ===\n"
+                )
+
+                break
+
+        ##Debugger Output
+        elif agent_name == "Debugger":
+
+            print("\n=== DEBUGGER AGENT ===\n")
+
+            print(
+                workflow_state["debug_analysis"]
+            )
+
+        ##Code Generator Output
+        elif agent_name == "CodeGenerator":
+
+            print(
+                "\n=== CODE GENERATOR AGENT ===\n"
+            )
+
+            print(
+                workflow_state["generated_fix"]
+            )
+
+        ##Reviewer Output
+        elif agent_name == "Reviewer":
+
+            print("\n=== REVIEWER AGENT ===\n")
+
+            print(
+                workflow_state["review_result"]
+            )
 
     print("\n=== AGENTFORGE FINISHED ===\n")
 
