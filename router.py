@@ -95,6 +95,34 @@ def execute_step(step, workflow_state):
 
         workflow_state["review_result"] = result
 
+        ##Apply patch automatically if accepted
+        if "ACCEPT" in result:
+
+            patch_result = apply_patch(
+                "sample_project/app.py",
+                workflow_state["generated_fix"]
+            )
+
+            workflow_state["patch_result"] = patch_result
+
+        return result
+
+        if not workflow_state["generated_fix"]:
+
+            print(
+                "Skipping Reviewer: "
+                "No generated fix available."
+            )
+
+            return None
+
+        result = reviewer_agent(
+            workflow_state["execution_result"]["stderr"],
+            workflow_state["generated_fix"]
+        )
+
+        workflow_state["review_result"] = result
+
         return result
 
     else:
