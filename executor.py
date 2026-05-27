@@ -10,21 +10,25 @@ def executor_agent(file_path):
             [sys.executable, file_path],
             capture_output=True,
             text=True,
-            timeout=5
+            timeout=10
         )
 
+        success = result.returncode == 0
+
         return {
-            "success": True,
+            "success": success,
             "stdout": result.stdout,
-            "stderr": result.stderr
+            "stderr": result.stderr,
+            "return_code": result.returncode
         }
 
     except subprocess.TimeoutExpired:
 
         return {
-            "success": True,
-            "stdout": "Server started successfully.",
-            "stderr": ""
+            "success": False,
+            "stdout": "",
+            "stderr": "Process execution timed out.",
+            "return_code": -1
         }
 
     except Exception as error:
@@ -32,5 +36,6 @@ def executor_agent(file_path):
         return {
             "success": False,
             "stdout": "",
-            "stderr": str(error)
+            "stderr": str(error),
+            "return_code": -1
         }
