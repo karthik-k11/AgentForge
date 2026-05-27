@@ -107,6 +107,30 @@ def main():
                 workflow_state["review_result"]
             )
 
+            ##Patch result display
+            if workflow_state["patch_result"]:
+
+                print("\n=== PATCHER AGENT ===\n")
+
+                if workflow_state["patch_result"]["success"]:
+
+                    print("Patch applied successfully")
+
+                    print(
+                        "Backup created:",
+                        workflow_state["patch_result"][
+                            "backup_file"
+                        ]
+                    )
+
+                else:
+
+                    print("Patch failed")
+
+                    print(
+                        workflow_state["patch_result"]["error"]
+                    )
+
     print("\n=== AGENTFORGE FINISHED ===\n")
 
 
