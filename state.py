@@ -14,5 +14,7 @@ def create_workflow_state():
 
         "generated_fix": "",
 
-        "review_result": ""
+        "review_result": "",
+
+        "patch_result": {}
     }
