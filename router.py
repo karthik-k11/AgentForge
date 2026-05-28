@@ -4,6 +4,7 @@ from debugger import debugger_agent
 from codegen import code_generator_agent
 from reviewer import reviewer_agent
 from patcher import apply_patch
+from validator import validate_python_code
 
 def execute_step(step, workflow_state):
 
@@ -87,7 +88,7 @@ def execute_step(step, workflow_state):
             )
 
             return None
-
+        ##Run reviewer
         result = reviewer_agent(
             workflow_state["execution_result"]["stderr"],
             workflow_state["generated_fix"]
@@ -98,13 +99,32 @@ def execute_step(step, workflow_state):
         ##Apply patch automatically if accepted
         if "ACCEPT" in result:
 
-            patch_result = apply_patch(
-                "sample_project/app.py",
+            validation_result = validate_python_code(
                 workflow_state["generated_fix"]
             )
 
-            workflow_state["patch_result"] = patch_result
+            workflow_state[
+                "validation_result"
+            ] = validation_result
 
+            if validation_result["valid"]:
+
+                patch_result = apply_patch(
+                    "sample_project/app.py",
+                    workflow_state["generated_fix"]
+                )
+
+                workflow_state["patch_result"] = patch_result
+
+            else:
+
+                workflow_state["patch_result"] = {
+                    "success": False,
+                    "error": (
+                        "Generated fix failed "
+                        "syntax validation"
+                    )
+                }
         return result
 
         if not workflow_state["generated_fix"]:
