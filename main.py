@@ -106,7 +106,20 @@ def main():
             print(
                 workflow_state["review_result"]
             )
+            
+            print("\n=== VALIDATOR AGENT ===\n")
 
+            if workflow_state["validation_result"]["valid"]:
+
+                print("Generated code is valid")
+
+            else:
+
+                print("Generated code is invalid")
+
+                print(
+                    workflow_state["validation_result"]["error"]
+                )
             ##Patch result display
             if workflow_state["patch_result"]:
 
