@@ -5,6 +5,7 @@ from codegen import code_generator_agent
 from reviewer import reviewer_agent
 from patcher import apply_patch
 from validator import validate_python_code
+from error_parser import extract_error_file
 
 def execute_step(step, workflow_state):
 
@@ -36,6 +37,12 @@ def execute_step(step, workflow_state):
         )
 
         workflow_state["execution_result"] = result
+
+        failed_file = extract_error_file(
+            result["stderr"]
+        )
+
+        workflow_state["failed_file"] = failed_file
 
         return result
 
@@ -110,7 +117,7 @@ def execute_step(step, workflow_state):
             if validation_result["valid"]:
 
                 patch_result = apply_patch(
-                    "sample_project/app.py",
+                    workflow_state["failed_file"],
                     workflow_state["generated_fix"]
                 )
 
