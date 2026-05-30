@@ -67,6 +67,11 @@ def main():
             print(
                 workflow_state["execution_result"]["stderr"]
             )
+            print("\nFAILED FILE:\n")
+
+            print(
+                workflow_state["failed_file"]
+            )
 
             ##Success condition
             if workflow_state["execution_result"]["success"]:
