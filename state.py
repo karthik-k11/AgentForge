@@ -16,5 +16,9 @@ def create_workflow_state():
 
         "review_result": "",
 
-        "patch_result": {}
+        "patch_result": {},
+
+        "validation_result": {},
+
+        "failed_file": "",
     }
