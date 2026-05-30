@@ -1,2 +1,2 @@
-username = "default_user"
+username = "default_username"
 print(username)
