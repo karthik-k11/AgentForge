@@ -6,6 +6,7 @@ from reviewer import reviewer_agent
 from patcher import apply_patch
 from validator import validate_python_code
 from error_parser import extract_error_file
+from permissions import is_patch_allowed
 
 def execute_step(step, workflow_state):
 
@@ -33,7 +34,10 @@ def execute_step(step, workflow_state):
     elif agent_name == "Executor":
 
         result = executor_agent(
-            "sample_project/app.py"
+            "sample_project/app.py",
+            workflow_state[
+                "sandbox_config"
+            ]["max_execution_time"]
         )
 
         workflow_state["execution_result"] = result
@@ -42,6 +46,14 @@ def execute_step(step, workflow_state):
             "return_code": result["return_code"],
             "execution_time": result["execution_time"]
         }
+
+        workflow_state[
+            "execution_history"
+        ].append(
+            workflow_state[
+                "execution_metadata"
+            ]
+        )
 
         failed_file = extract_error_file(
             result["stderr"]
@@ -121,10 +133,25 @@ def execute_step(step, workflow_state):
 
             if validation_result["valid"]:
 
-                patch_result = apply_patch(
+                allowed = is_patch_allowed(
                     workflow_state["failed_file"],
-                    workflow_state["generated_fix"]
+                    workflow_state["safety_config"]
                 )
+
+                if allowed:
+
+                    patch_result = apply_patch(
+                        workflow_state["failed_file"],
+                        workflow_state["generated_fix"]
+                    )
+
+                else:
+
+                    patch_result = {
+                        "success": False,
+                        "error":
+                        "Patch blocked by safety policy"
+                    }
 
                 workflow_state["patch_result"] = patch_result
 
