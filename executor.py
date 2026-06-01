@@ -3,7 +3,7 @@ import sys
 import time
 
 
-def executor_agent(file_path):
+def executor_agent(file_path, max_execution_time=10):
 
     try:
         start_time = time.time()
@@ -11,7 +11,7 @@ def executor_agent(file_path):
             [sys.executable, file_path],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=max_execution_time
         )
 
         success = result.returncode == 0
