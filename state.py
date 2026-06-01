@@ -22,5 +22,25 @@ def create_workflow_state():
 
         "failed_file": "",
 
-        "execution_metadata": {}
+        "execution_metadata": {},
+
+        "execution_history": [],
+
+        "sandbox_config": {
+            "max_execution_time": 10,
+            "allow_execution": True
+        },
+
+        "safety_config": {
+
+            "allowed_directories": [
+                "sample_project"
+            ],
+
+            "protected_paths": [
+                ".env",
+                ".git",
+                "venv"
+            ]
+        }
     }
