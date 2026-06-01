@@ -21,4 +21,6 @@ def create_workflow_state():
         "validation_result": {},
 
         "failed_file": "",
+
+        "execution_metadata": {}
     }
