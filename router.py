@@ -37,6 +37,11 @@ def execute_step(step, workflow_state):
         )
 
         workflow_state["execution_result"] = result
+        workflow_state["execution_metadata"] = {
+            "status": result["status"],
+            "return_code": result["return_code"],
+            "execution_time": result["execution_time"]
+        }
 
         failed_file = extract_error_file(
             result["stderr"]
