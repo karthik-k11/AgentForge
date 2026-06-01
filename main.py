@@ -73,6 +73,25 @@ def main():
                 workflow_state["failed_file"]
             )
 
+            print("\nEXECUTION STATUS:\n")
+
+            print(
+                workflow_state["execution_result"]["status"]
+            )
+            print("\nEXECUTION TIME:\n")
+
+            print(
+                workflow_state["execution_result"][
+                    "execution_time"
+                ],
+                "seconds"
+            )
+            print("\nEXECUTION METADATA:\n")
+
+            print(
+                workflow_state["execution_metadata"]
+            )
+
             ##Success condition
             if workflow_state["execution_result"]["success"]:
 
