@@ -92,6 +92,18 @@ def main():
                 workflow_state["execution_metadata"]
             )
 
+            print("\nEXECUTION HISTORY:\n")
+
+            print(
+                workflow_state["execution_history"]
+            )
+
+            print("\nSANDBOX CONFIG:\n")
+
+            print(
+                workflow_state["sandbox_config"]
+            )
+
             ##Success condition
             if workflow_state["execution_result"]["success"]:
 
