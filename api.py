@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+import asyncio
 
 from planner import planner_agent
 from workflow import run_workflow
@@ -17,7 +18,7 @@ class PlanRequest(BaseModel):
 
 
 @app.get("/")
-def home():
+async def home():
 
     return {
         "message": "AgentForge API Running"
@@ -25,7 +26,7 @@ def home():
 
 
 @app.post("/plan")
-def generate_plan(
+async def generate_plan(
     payload: PlanRequest
 ):
 
@@ -36,11 +37,12 @@ def generate_plan(
     return plan
 
 @app.post("/run")
-def run_agentforge(
+async def run_agentforge(
     payload: PlanRequest
 ):
 
-    result = run_workflow(
+    result = await asyncio.to_thread(
+        run_workflow,
         payload.request
     )
 
