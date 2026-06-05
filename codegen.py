@@ -2,7 +2,14 @@ from llm import ask_llm
 from utils import clean_code_response
 
 
-def code_generator_agent(error_traceback):
+def code_generator_agent(
+    error_traceback,
+    retry_memory=None
+):
+
+    if retry_memory is None:
+
+        retry_memory = []
 
     prompt = f"""
     You are a senior AI Software Engineer.
@@ -10,6 +17,9 @@ def code_generator_agent(error_traceback):
     A Python application failed.
 
     Analyze the traceback and generate corrected Python code.
+
+    Previous Retry Attempts:
+    {retry_memory}
 
     Return ONLY raw Python code.
 
