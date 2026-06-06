@@ -5,7 +5,10 @@ from codegen import code_generator_agent
 from reviewer import reviewer_agent
 from patcher import apply_patch
 from validator import validate_python_code
-from error_parser import extract_error_file
+from error_parser import (
+    extract_error_file,
+    extract_error_line
+)
 from permissions import is_patch_allowed
 
 def execute_step(step, workflow_state):
@@ -41,6 +44,7 @@ def execute_step(step, workflow_state):
         )
 
         workflow_state["execution_result"] = result
+
         workflow_state["execution_metadata"] = {
             "status": result["status"],
             "return_code": result["return_code"],
@@ -59,7 +63,13 @@ def execute_step(step, workflow_state):
             result["stderr"]
         )
 
+        failed_line = extract_error_line(
+            result["stderr"]
+        )
+
         workflow_state["failed_file"] = failed_file
+
+        workflow_state["failed_line"] = failed_line
 
         return result
 
@@ -95,7 +105,13 @@ def execute_step(step, workflow_state):
             return None
 
         result = code_generator_agent(
-            workflow_state["execution_result"]["stderr"]
+            workflow_state[
+                "execution_result"
+            ]["stderr"],
+
+            workflow_state[
+                "retry_memory"
+            ]
         )
 
         workflow_state["generated_fix"] = result
@@ -112,6 +128,7 @@ def execute_step(step, workflow_state):
             )
 
             return None
+
         ##Run reviewer
         result = reviewer_agent(
             workflow_state["execution_result"]["stderr"],
@@ -119,6 +136,21 @@ def execute_step(step, workflow_state):
         )
 
         workflow_state["review_result"] = result
+
+        workflow_state[
+            "retry_memory"
+        ].append({
+
+            "error": workflow_state[
+                "execution_result"
+            ]["stderr"],
+
+            "generated_fix": workflow_state[
+                "generated_fix"
+            ],
+
+            "review_result": result
+        })
 
         ##Apply patch automatically if accepted
         if "ACCEPT" in result:
@@ -142,7 +174,8 @@ def execute_step(step, workflow_state):
 
                     patch_result = apply_patch(
                         workflow_state["failed_file"],
-                        workflow_state["generated_fix"]
+                        workflow_state["generated_fix"],
+                        workflow_state["failed_line"]
                     )
 
                 else:
@@ -164,23 +197,6 @@ def execute_step(step, workflow_state):
                         "syntax validation"
                     )
                 }
-        return result
-
-        if not workflow_state["generated_fix"]:
-
-            print(
-                "Skipping Reviewer: "
-                "No generated fix available."
-            )
-
-            return None
-
-        result = reviewer_agent(
-            workflow_state["execution_result"]["stderr"],
-            workflow_state["generated_fix"]
-        )
-
-        workflow_state["review_result"] = result
 
         return result
 
