@@ -37,6 +37,15 @@ def run_workflow(user_request):
             "status",
             "UNKNOWN"
         ),
+        "agent_count": len(
+            plan["steps"]
+        ),
+
+        "execution_history": len(
+            workflow_state[
+                "execution_history"
+            ]
+        ),
 
         "failed_file": workflow_state[
             "failed_file"
@@ -53,6 +62,14 @@ def run_workflow(user_request):
         "patch_result": workflow_state[
             "patch_result"
         ],
+
+        "validation_passed":
+        workflow_state[
+            "validation_result"
+        ].get(
+            "valid",
+            False
+        ),
 
         "execution_time": workflow_state[
             "execution_result"
