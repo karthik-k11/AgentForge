@@ -22,9 +22,13 @@ def create_workflow_state():
 
         "failed_file": "",
 
+        "failed_line": None,
+
         "execution_metadata": {},
 
         "execution_history": [],
+
+        "retry_memory": [],
 
         "sandbox_config": {
             "max_execution_time": 10,
