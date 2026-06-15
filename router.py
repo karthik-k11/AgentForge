@@ -153,7 +153,7 @@ def execute_step(step, workflow_state):
         })
 
         ##Apply patch automatically if accepted
-        if "ACCEPT" in result:
+        if result.strip().upper() == "ACCEPT":
 
             validation_result = validate_python_code(
                 workflow_state["generated_fix"]
