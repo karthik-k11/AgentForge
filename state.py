@@ -4,6 +4,10 @@ def create_workflow_state():
 
         "user_request": "",
 
+        "project_path": "sample_project",
+
+        "entry_file": "sample_project/app.py",
+
         "project_context": "",
 
         "files": [],
