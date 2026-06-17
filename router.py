@@ -22,7 +22,7 @@ def execute_step(step, workflow_state):
     if agent_name == "Explorer":
 
         result = explorer_agent(
-            "sample_project",
+            workflow_state["project_path"],
             workflow_state["user_request"]
         )
 
@@ -37,7 +37,7 @@ def execute_step(step, workflow_state):
     elif agent_name == "Executor":
 
         result = executor_agent(
-            "sample_project/app.py",
+            workflow_state["entry_file"],
             workflow_state[
                 "sandbox_config"
             ]["max_execution_time"]
