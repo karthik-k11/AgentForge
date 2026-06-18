@@ -16,6 +16,10 @@ class PlanRequest(BaseModel):
 
     request: str
 
+    project_path: str = "sample_project"
+
+    entry_file: str = "sample_project/app.py"
+
 
 @app.get("/")
 async def home():
@@ -36,6 +40,7 @@ async def generate_plan(
 
     return plan
 
+
 @app.post("/run")
 async def run_agentforge(
     payload: PlanRequest
@@ -43,7 +48,9 @@ async def run_agentforge(
 
     result = await asyncio.to_thread(
         run_workflow,
-        payload.request
+        payload.request,
+        payload.project_path,
+        payload.entry_file
     )
 
     return result
