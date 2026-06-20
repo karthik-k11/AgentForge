@@ -3,11 +3,22 @@ from router import execute_step
 from state import create_workflow_state
 
 
-def run_workflow(user_request):
+MAX_RETRIES = 3
+
+
+def run_workflow(
+    user_request,
+    project_path="sample_project",
+    entry_file="sample_project/app.py"
+):
 
     workflow_state = create_workflow_state()
 
     workflow_state["user_request"] = user_request
+
+    workflow_state["project_path"] = project_path
+
+    workflow_state["entry_file"] = entry_file
 
     plan = planner_agent(user_request)
 
@@ -19,6 +30,43 @@ def run_workflow(user_request):
             step,
             workflow_state
         )
+
+        if step["agent"] == "Reviewer":
+
+            retries = 0
+
+            while (
+                workflow_state[
+                    "review_result"
+                ].strip().upper()
+                != "ACCEPT"
+            ):
+
+                if retries >= MAX_RETRIES:
+
+                    print(
+                        "Max retries reached."
+                    )
+
+                    break
+
+                execute_step(
+                    {
+                        "agent": "CodeGenerator",
+                        "action": "Retry fix"
+                    },
+                    workflow_state
+                )
+
+                execute_step(
+                    {
+                        "agent": "Reviewer",
+                        "action": "Re-review fix"
+                    },
+                    workflow_state
+                )
+
+                retries += 1
 
         if (
             step["agent"] == "Executor"
@@ -37,6 +85,7 @@ def run_workflow(user_request):
             "status",
             "UNKNOWN"
         ),
+
         "agent_count": len(
             plan["steps"]
         ),
