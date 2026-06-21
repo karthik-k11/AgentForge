@@ -6,17 +6,28 @@ def reviewer_agent(original_error, generated_fix):
     prompt = f"""
     You are a senior AI Code Reviewer.
 
-    Review the generated fix carefully.
+    Your job is to critically evaluate the generated fix.
 
-    Determine:
-    1. Does the fix solve the error?
-    2. Is the fix reasonable?
-    3. Should the system ACCEPT or RETRY?
+    Assume the fix is incorrect unless there is sufficient evidence that it solves the original error.
 
-    Return ONLY:
+    Carefully verify:
+
+    1. Does the generated fix directly address the reported error?
+    2. Could it introduce new bugs or syntax errors?
+    3. Does it preserve the intended behavior of the program?
+    4. Is the fix complete rather than a temporary workaround?
+
+    Decision rules:
+
+    - Return ACCEPT only if you are confident the fix is correct.
+    - Return RETRY if you have any reasonable doubt.
+
+    Return ONLY one word:
 
     ACCEPT
+
     or
+
     RETRY
 
     Original Error:
