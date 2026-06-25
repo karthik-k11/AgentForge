@@ -111,3 +111,46 @@
     background:#1d4ed8;
 
 }
+.result{
+
+    margin-top:30px;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    background:#eef4ff;
+
+    border:1px solid #c7d8ff;
+
+}
+
+.result h2{
+
+    margin-bottom:15px;
+
+}
+
+.result h3{
+
+    margin-top:20px;
+
+    margin-bottom:10px;
+
+}
+
+.result pre{
+
+    background:white;
+
+    padding:15px;
+
+    border-radius:8px;
+
+    overflow-x:auto;
+
+    white-space:pre-wrap;
+
+    border:1px solid #ddd;
+
+}
