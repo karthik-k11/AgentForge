@@ -10,6 +10,11 @@ function Home() {
 
     const [result, setResult] = useState(null);
 
+    const [loading, setLoading] = useState(false);
+
+    const [currentStep, setCurrentStep] = useState(0);
+
+
     const handleRun = async () => {
 
         if (!problem.trim()) {
@@ -17,7 +22,29 @@ function Home() {
             alert("Please enter a software problem.");
 
             return;
+
         }
+
+        setLoading(true);
+        setCurrentStep(1);
+
+        const timer = setInterval(() => {
+
+            setCurrentStep(previous => {
+
+                if (previous >= 6) {
+
+                    return 6;
+
+                }
+
+                 previous + 1;
+
+            });
+
+        }, 700);
+
+        setResult(null);
 
         try {
 
@@ -26,6 +53,7 @@ function Home() {
             console.log(response);
 
             setResult(response);
+
         }
 
         catch (error) {
@@ -33,6 +61,16 @@ function Home() {
             console.error(error);
 
             alert("Unable to connect to AgentForge.");
+
+        }
+
+        finally {
+
+            clearInterval(timer);
+
+            setCurrentStep(6);
+
+            setLoading(false);
 
         }
 
@@ -44,80 +82,343 @@ function Home() {
 
             <div className="container">
 
-                <h1 className="title">
-                    AgentForge
-                </h1>
+                <header className="hero">
 
-                <p className="subtitle">
-                    Autonomous AI Software Debugger
-                </p>
+                    <div className="heroBadge">
 
-                <label className="label">
-                    Describe your software problem
-                </label>
+                        AI Multi-Agent System
 
-                <textarea
-                    className="textbox"
-                    placeholder="Example: My Flask app crashes when I start the server..."
-                    value={problem}
-                    onChange={(event) =>
-                        setProblem(event.target.value)
-                    }
-                />
+                    </div>
 
-                <button
-                    className="button"
-                    onClick={handleRun}
-                >
-                    Run AgentForge
-                </button>
+                    <h1 className="title">
+
+                        AgentForge
+
+                    </h1>
+
+                    <p className="subtitle">
+
+                        Autonomous AI Software Debugger
+
+                    </p>
+
+                </header>
+
+                <section className="inputSection">
+
+                    <label className="label">
+
+                        Describe your software problem
+
+                    </label>
+
+                    <textarea
+
+                        className="textbox"
+
+                        placeholder="Example: My Flask app crashes when I start the server..."
+
+                        value={problem}
+
+                        onChange={(event) =>
+                            setProblem(event.target.value)
+                        }
+
+                    />
+
+                    <button
+
+                        className="button"
+
+                        onClick={handleRun}
+
+                        disabled={loading}
+
+                    >
+
+                        {
+
+                            loading
+
+                                ? "Running AgentForge..."
+
+                                : "Run AgentForge"
+
+                        }
+
+                    </button>
+
+                </section>
                 {
-                    result && (
+                loading && (
 
-                        <div className="result">
+                    <section className="dashboard">
 
-                            <h2>Execution Result</h2>
+                        <h2 className="sectionTitle">
 
-                            <p>
-                                <strong>Status:</strong>{" "}
-                                {result.status}
-                            </p>
+                            Agent Execution
 
-                            <p>
-                                <strong>Execution Time:</strong>{" "}
-                                {result.execution_time} sec
-                            </p>
+                        </h2>
 
-                            <p>
-                                <strong>Review:</strong>{" "}
-                                {result.review_result}
-                            </p>
+                        <div className="card">
 
-                            <p>
-                                <strong>Validation:</strong>{" "}
+                            <div className="workflow">
+
                                 {
-                                    result.validation_passed
-                                        ? "Passed"
-                                        : "Failed"
+
+                                    [
+
+                                        "Planner",
+
+                                        "Explorer",
+
+                                        "Executor",
+
+                                        "Debugger",
+
+                                        "Code Generator",
+
+                                        "Reviewer"
+
+                                    ].map((agent, index) => (
+
+                                        <div
+
+                                            key={agent}
+
+                                            className={
+
+                                                index < currentStep
+
+                                                    ? "workflowStep active"
+
+                                                    : "workflowStep"
+
+                                            }
+
+                                        >
+
+                                            <span className="stepNumber">
+
+                                                {index + 1}
+
+                                            </span>
+
+                                            <span>
+
+                                                {agent}
+
+                                            </span>
+
+                                        </div>
+
+                                    ))
+
                                 }
+
+                            </div>
+
+                            <p
+                                style={{
+                                    marginTop: "20px",
+                                    fontWeight: "600",
+                                    color: "#2563eb"
+                                }}
+                            >
+
+                                Running autonomous debugging workflow...
+
                             </p>
-
-                            <p>
-                                <strong>Failed File:</strong>{" "}
-                                {result.failed_file || "None"}
-                            </p>
-
-                            <h3>Generated Fix</h3>
-
-                            <pre>
-
-                                {result.generated_fix}
-
-                            </pre>
 
                         </div>
 
+                    </section>
+
+                )
+            }
+                {
+
+                    result && (
+
+                        <section className="dashboard">
+
+                            <h2 className="sectionTitle">
+
+                                Execution Summary
+
+                            </h2>
+
+                            <div className="summaryGrid">
+
+                                <div className="card">
+
+                                    <h3>Status</h3>
+
+                                    <span
+                                        className={
+                                            result.status === "SUCCESS"
+                                                ? "badge success"
+                                                : "badge error"
+                                        }
+                                    >
+
+                                        {result.status}
+
+                                    </span>
+
+                                </div>
+
+                                <div className="card">
+
+                                    <h3>Validation</h3>
+
+                                    <span
+                                        className={
+                                            !result.validation_required
+                                                ? "badge"
+                                                : result.validation_passed
+                                                    ? "badge success"
+                                                    : "badge error"
+                                        }
+                                    >
+
+                                        {
+
+                                            !result.validation_required
+
+                                                ? "Not Required"
+
+                                                : result.validation_passed
+
+                                                    ? "Passed"
+
+                                                    : "Failed"
+
+                                        }
+
+                                    </span>
+
+                                </div>
+
+                                <div className="card">
+
+                                    <h3>Execution Time</h3>
+
+                                    <p>
+
+                                        {result.execution_time} sec
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
+                                    Execution Workflow
+
+                                </h3>
+
+                                <div className="workflow">
+
+                                    {
+
+                                        result.plan.steps.map((step, index) => (
+
+                                            <div
+                                                key={index}
+                                                className="workflowStep"
+                                            >
+
+                                                <span className="stepNumber">
+
+                                                    {index + 1}
+
+                                                </span>
+
+                                                <span>
+
+                                                    {step.agent}
+
+                                                </span>
+
+                                            </div>
+
+                                        ))
+
+                                    }
+
+                                </div>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
+                                    Review
+
+                                </h3>
+
+                                <p>
+
+                                    {result.review_result || "Not Required"}
+
+                                </p>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
+                                    Failed File
+
+                                </h3>
+
+                                <p>
+
+                                    {
+
+                                        result.failed_file ||
+
+                                        "None"
+
+                                    }
+
+                                </p>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
+                                    Generated Fix
+
+                                </h3>
+
+                                <pre>
+
+                                    {
+
+                                        result.generated_fix ||
+
+                                        "No fix generated."
+
+                                    }
+
+                                </pre>
+
+                            </div>
+
+                        </section>
+
                     )
+
                 }
 
             </div>

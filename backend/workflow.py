@@ -104,6 +104,10 @@ def run_workflow(
             "generated_fix"
         ],
 
+        "debug_analysis": workflow_state[
+            "debug_analysis"
+        ],
+
         "review_result": workflow_state[
             "review_result"
         ],
@@ -112,15 +116,38 @@ def run_workflow(
             "patch_result"
         ],
 
+        "patch_success":
+        workflow_state[
+            "patch_result"
+        ].get(
+            "success",
+            False
+        ),
+
+        "backup_file":
+        workflow_state[
+            "patch_result"
+        ].get(
+            "backup_file"
+        ),
+
         "validation_passed":
         workflow_state[
             "validation_result"
         ].get(
-            "valid",
+            "valid"
+        ),
+
+        "validation_required":
+        not workflow_state[
+            "execution_result"
+        ].get(
+            "success",
             False
         ),
 
-        "execution_time": workflow_state[
+        "execution_time":
+        workflow_state[
             "execution_result"
         ].get(
             "execution_time",

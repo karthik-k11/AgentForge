@@ -7,41 +7,59 @@ from utils import clean_json_response
 def planner_agent(user_request):
 
     prompt = f"""
-    You are a senior AI Orchestrator Agent.
+You are an AI Workflow Planner.
 
-    Create a structured execution plan.
+Your job is ONLY to generate the execution plan.
 
-    Available Agents:
-    - Explorer
-    - Executor
-    - Debugger
-    - CodeGenerator
-    - Reviewer
+You MUST use ONLY these agents and in this exact order:
 
-    Return ONLY valid JSON.
+1. Explorer
+2. Executor
+3. Debugger
+4. CodeGenerator
+5. Reviewer
 
-    Example:
+Rules:
 
-    {{
-        "steps": [
-            {{
-                "agent": "Explorer",
-                "action": "Inspect project files"
-            }},
-            {{
-                "agent": "Executor",
-                "action": "Run Flask application"
-            }},
-            {{
-                "agent": "Debugger",
-                "action": "Analyze runtime errors"
-            }}
-        ]
-    }}
+- Do NOT add extra agents.
+- Do NOT repeat any agent.
+- Do NOT skip any agent.
+- Do NOT invent new agent names.
+- Always return exactly 5 steps.
+- Return ONLY valid JSON.
+- No markdown.
+- No explanations.
 
-    User Request:
-    {user_request}
-    """
+Return this schema exactly:
+
+{{
+    "steps":[
+        {{
+            "agent":"Explorer",
+            "action":"Inspect project files"
+        }},
+        {{
+            "agent":"Executor",
+            "action":"Run target application"
+        }},
+        {{
+            "agent":"Debugger",
+            "action":"Analyze runtime errors"
+        }},
+        {{
+            "agent":"CodeGenerator",
+            "action":"Generate corrected code"
+        }},
+        {{
+            "agent":"Reviewer",
+            "action":"Review generated fix"
+        }}
+    ]
+}}
+
+User Request:
+{user_request}
+"""
 
     response = ask_llm(prompt)
 
