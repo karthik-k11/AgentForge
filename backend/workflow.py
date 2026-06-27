@@ -104,6 +104,11 @@ def run_workflow(
             "generated_fix"
         ],
 
+        "original_code":
+        workflow_state[
+            "project_context"
+        ],
+
         "debug_analysis": workflow_state[
             "debug_analysis"
         ],

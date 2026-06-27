@@ -318,6 +318,22 @@ function Home() {
 
                                 <h3>
 
+                                    Agents Used
+
+                                </h3>
+
+                                <p>
+
+                                    {result.agent_count}
+
+                                </p>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
                                     Execution Workflow
 
                                 </h3>
@@ -375,9 +391,15 @@ function Home() {
 
                                 <h3>
 
-                                    Failed File
+                                    Failure Analysis
 
                                 </h3>
+
+                                <p>
+
+                                    <strong>File</strong>
+
+                                </p>
 
                                 <p>
 
@@ -385,7 +407,27 @@ function Home() {
 
                                         result.failed_file ||
 
-                                        "None"
+                                        "No failure detected."
+
+                                }
+
+                                </p>
+
+                                <br />
+
+                                <p>
+
+                                    <strong>Debugger Analysis</strong>
+
+                                </p>
+
+                                <p>
+
+                                    {
+
+                                        result.debug_analysis ||
+
+                                        "Application executed successfully."
 
                                     }
 
@@ -397,21 +439,81 @@ function Home() {
 
                                 <h3>
 
-                                    Generated Fix
+                                    Patch Information
 
                                 </h3>
 
-                                <pre>
+                                <p>
+
+                                    <strong>Status:</strong>{" "}
 
                                     {
 
-                                        result.generated_fix ||
+                                        result.patch_success
 
-                                        "No fix generated."
+                                            ? "Applied Successfully"
+
+                                            : "Not Applied"
 
                                     }
 
-                                </pre>
+                                </p>
+
+                                <br />
+
+                                <p>
+
+                                    <strong>Backup File</strong>
+
+                                </p>
+
+                                <p>
+
+                                    {
+
+                                        result.backup_file ||
+
+                                        "No backup created."
+
+                                    }
+
+                                </p>
+
+                            </div>
+
+                            <div className="card">
+
+                                <h3>
+
+                                    Code Changes
+
+                                </h3>
+
+                                <div className="diffContainer">
+
+                                    <div className="diffColumn">
+
+                                        <h4>
+
+                                            Generated Fix
+
+                                        </h4>
+
+                                        <pre>
+
+                                            {
+
+                                                result.generated_fix ||
+
+                                                "No fix generated."
+
+                                            }
+
+                                        </pre>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
