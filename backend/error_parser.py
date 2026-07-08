@@ -10,9 +10,17 @@ def extract_error_file(traceback_text):
         traceback_text
     )
 
-    if matches:
+    for file in reversed(matches):
 
-        return matches[-1]
+        if (
+            "<frozen" not in file
+            and
+            "site-packages" not in file
+            and
+            "lib/python" not in file.replace("\\", "/").lower()
+        ):
+
+            return file
 
     return None
 
