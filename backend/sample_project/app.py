@@ -1,1 +1,3 @@
-print(username)
+from math import nonexistent_function
+
+print("Hello")
