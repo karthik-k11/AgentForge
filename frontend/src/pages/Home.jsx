@@ -38,7 +38,7 @@ function Home() {
 
                 }
 
-                 previous + 1;
+                return previous + 1;
 
             });
 
@@ -252,17 +252,43 @@ function Home() {
 
                                 <div className="card">
 
-                                    <h3>Status</h3>
+                                    <h3>
+
+                                        Initial Status
+
+                                    </h3>
 
                                     <span
                                         className={
-                                            result.status === "SUCCESS"
+                                            result.initial_status === "SUCCESS"
                                                 ? "badge success"
                                                 : "badge error"
                                         }
                                     >
 
-                                        {result.status}
+                                        {result.initial_status}
+
+                                        </span>
+
+                                </div>
+
+                                <div className="card">
+
+                                    <h3>
+
+                                        Final Status
+
+                                    </h3>
+
+                                    <span
+                                        className={
+                                            result.final_status === "SUCCESS"
+                                                ? "badge success"
+                                                : "badge error"
+                                        }
+                                    >
+
+                                        {result.final_status}
 
                                     </span>
 
