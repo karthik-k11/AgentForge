@@ -16,6 +16,9 @@ def run_workflow(
 
     workflow_state["user_request"] = user_request
 
+    workflow_state["initial_status"] = "UNKNOWN"
+    workflow_state["final_status"] = "UNKNOWN"
+
     workflow_state["project_path"] = project_path
 
     workflow_state["entry_file"] = entry_file
@@ -30,6 +33,16 @@ def run_workflow(
             step,
             workflow_state
         )
+        if (
+            step["agent"] == "Executor"
+            and
+            workflow_state["initial_status"] == "UNKNOWN"
+        ):
+
+            workflow_state["initial_status"] = (
+                workflow_state["execution_result"]
+                .get("status", "UNKNOWN")
+            )
 
         if step["agent"] == "Reviewer":
 
@@ -68,6 +81,38 @@ def run_workflow(
 
                 retries += 1
 
+            if (
+                workflow_state[
+                    "review_result"
+                ].strip().upper()
+                == "ACCEPT"
+            ):
+
+                print("\n===== VERIFYING PATCH =====")
+
+                execute_step(
+                    {
+                        "agent": "Executor",
+                        "action": "Verify patched application"
+                    },
+                    workflow_state
+                )
+
+                print("Verification Result:")
+                print(workflow_state["execution_result"])
+
+                print(
+                    "\nVerifying patched application...\n"
+                )
+
+                execute_step(
+                    {
+                        "agent": "Executor",
+                        "action": "Verify patched application"
+                    },
+                    workflow_state
+                )
+
         if (
             step["agent"] == "Executor"
             and
@@ -79,7 +124,13 @@ def run_workflow(
 
     return {
 
-        "status": workflow_state[
+        "initial_status":
+        workflow_state[
+            "initial_status"
+        ],
+
+        "final_status":
+        workflow_state[
             "execution_result"
         ].get(
             "status",
@@ -96,9 +147,17 @@ def run_workflow(
             ]
         ),
 
-        "failed_file": workflow_state[
+        "failed_file":
+        workflow_state[
             "failed_file"
-        ],
+        ].replace(
+            "\\",
+            "/"
+        ).split(
+            "backend/"
+        )[-1]
+        if workflow_state["failed_file"]
+        else "",
 
         "generated_fix": workflow_state[
             "generated_fix"
@@ -133,8 +192,14 @@ def run_workflow(
         workflow_state[
             "patch_result"
         ].get(
-            "backup_file"
-        ),
+            "backup_file",
+            ""
+        ).replace(
+            "\\",
+            "/"
+        ).split(
+            "backend/"
+        )[-1],
 
         "validation_passed":
         workflow_state[
@@ -144,8 +209,8 @@ def run_workflow(
         ),
 
         "validation_required":
-        not workflow_state[
-            "execution_result"
+        workflow_state[
+            "patch_result"
         ].get(
             "success",
             False
