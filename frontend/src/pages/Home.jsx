@@ -2,6 +2,16 @@ import { useState } from "react";
 
 import "./Home.css";
 
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import InputPanel from "../components/InputPanel";
+import Metrics from "../components/Metrics";
+import WorkflowTimeline from "../components/WorkflowTimeline";
+import FailureAnalysis from "../components/FailureAnalysis";
+import PatchCard from "../components/PatchCard";
+import CodeViewer from "../components/CodeViewer";
+import LoadingOverlay from "../components/LoadingOverlay";
+
 import { runAgentForge } from "../services/api";
 
 function Home() {
@@ -14,7 +24,6 @@ function Home() {
 
     const [currentStep, setCurrentStep] = useState(0);
 
-
     const handleRun = async () => {
 
         if (!problem.trim()) {
@@ -26,15 +35,18 @@ function Home() {
         }
 
         setLoading(true);
-        setCurrentStep(1);
+
+        setResult(null);
+
+        setCurrentStep(0);
 
         const timer = setInterval(() => {
 
-            setCurrentStep(previous => {
+            setCurrentStep((previous) => {
 
-                if (previous >= 6) {
+                if (previous >= 5) {
 
-                    return 6;
+                    return 5;
 
                 }
 
@@ -43,8 +55,6 @@ function Home() {
             });
 
         }, 700);
-
-        setResult(null);
 
         try {
 
@@ -68,7 +78,7 @@ function Home() {
 
             clearInterval(timer);
 
-            setCurrentStep(6);
+            setCurrentStep(5);
 
             setLoading(false);
 
@@ -79,471 +89,146 @@ function Home() {
     return (
 
         <div className="home">
+            {
+
+                loading &&
+
+                <LoadingOverlay
+
+                    currentStep={currentStep}
+
+                />
+
+            }
+
+            <div className="glow one"></div>
+
+            <div className="glow two"></div>
+
+            <div className="glow three"></div>
 
             <div className="container">
 
-                <header className="hero">
+                <Navbar />
 
-                    <div className="heroBadge">
+                <Hero />
 
-                        AI Multi-Agent System
+                <InputPanel
 
-                    </div>
+                    problem={problem}
 
-                    <h1 className="title">
+                    setProblem={setProblem}
 
-                        AgentForge
+                    handleRun={handleRun}
 
-                    </h1>
+                    loading={loading}
 
-                    <p className="subtitle">
+                />
 
-                        Autonomous AI Software Debugger
-
-                    </p>
-
-                </header>
-
-                <section className="inputSection">
-
-                    <label className="label">
-
-                        Describe your software problem
-
-                    </label>
-
-                    <textarea
-
-                        className="textbox"
-
-                        placeholder="Example: My Flask app crashes when I start the server..."
-
-                        value={problem}
-
-                        onChange={(event) =>
-                            setProblem(event.target.value)
-                        }
-
-                    />
-
-                    <button
-
-                        className="button"
-
-                        onClick={handleRun}
-
-                        disabled={loading}
-
-                    >
-
-                        {
-
-                            loading
-
-                                ? "Running AgentForge..."
-
-                                : "Run AgentForge"
-
-                        }
-
-                    </button>
-
-                </section>
                 {
-                loading && (
 
-                    <section className="dashboard">
+                    loading && (
 
-                        <h2 className="sectionTitle">
+                        <WorkflowTimeline
 
-                            Agent Execution
-
-                        </h2>
-
-                        <div className="card">
-
-                            <div className="workflow">
+                            steps={[
 
                                 {
 
-                                    [
+                                    agent:"Planner",
 
-                                        "Planner",
+                                    action:"Understand the software problem."
 
-                                        "Explorer",
+                                },
 
-                                        "Executor",
+                                {
 
-                                        "Debugger",
+                                    agent:"Explorer",
 
-                                        "Code Generator",
+                                    action:"Inspect the project structure."
 
-                                        "Reviewer"
+                                },
 
-                                    ].map((agent, index) => (
+                                {
 
-                                        <div
+                                    agent:"Executor",
 
-                                            key={agent}
+                                    action:"Execute the application."
 
-                                            className={
+                                },
 
-                                                index < currentStep
+                                {
 
-                                                    ? "workflowStep active"
+                                    agent:"Debugger",
 
-                                                    : "workflowStep"
+                                    action:"Analyze runtime failures."
 
-                                            }
+                                },
 
-                                        >
+                                {
 
-                                            <span className="stepNumber">
+                                    agent:"Code Generator",
 
-                                                {index + 1}
+                                    action:"Generate an intelligent fix."
 
-                                            </span>
+                                },
 
-                                            <span>
+                                {
 
-                                                {agent}
+                                    agent:"Reviewer",
 
-                                            </span>
-
-                                        </div>
-
-                                    ))
+                                    action:"Validate the generated solution."
 
                                 }
 
-                            </div>
+                            ]}
 
-                            <p
-                                style={{
-                                    marginTop: "20px",
-                                    fontWeight: "600",
-                                    color: "#2563eb"
-                                }}
-                            >
+                            currentStep={currentStep}
 
-                                Running autonomous debugging workflow...
+                        />
 
-                            </p>
+                    )
 
-                        </div>
+                }
 
-                    </section>
-
-                )
-            }
                 {
 
                     result && (
 
-                        <section className="dashboard">
+                        <>
+                                                    <Metrics
 
-                            <h2 className="sectionTitle">
+                                result={result}
 
-                                Execution Summary
+                            />
 
-                            </h2>
+                            <WorkflowTimeline
 
-                            <div className="summaryGrid">
+                                steps={result.plan.steps}
 
-                                <div className="card">
+                                currentStep={result.plan.steps.length}
 
-                                    <h3>
+                            />
 
-                                        Initial Status
+                            <FailureAnalysis
 
-                                    </h3>
+                                result={result}
 
-                                    <span
-                                        className={
-                                            result.initial_status === "SUCCESS"
-                                                ? "badge success"
-                                                : "badge error"
-                                        }
-                                    >
+                            />
 
-                                        {result.initial_status}
+                            <PatchCard
 
-                                        </span>
+                                result={result}
 
-                                </div>
+                            />
 
-                                <div className="card">
+                            <CodeViewer
 
-                                    <h3>
+                                result={result}
 
-                                        Final Status
+                            />
 
-                                    </h3>
-
-                                    <span
-                                        className={
-                                            result.final_status === "SUCCESS"
-                                                ? "badge success"
-                                                : "badge error"
-                                        }
-                                    >
-
-                                        {result.final_status}
-
-                                    </span>
-
-                                </div>
-
-                                <div className="card">
-
-                                    <h3>Validation</h3>
-
-                                    <span
-                                        className={
-                                            !result.validation_required
-                                                ? "badge"
-                                                : result.validation_passed
-                                                    ? "badge success"
-                                                    : "badge error"
-                                        }
-                                    >
-
-                                        {
-
-                                            !result.validation_required
-
-                                                ? "Not Required"
-
-                                                : result.validation_passed
-
-                                                    ? "Passed"
-
-                                                    : "Failed"
-
-                                        }
-
-                                    </span>
-
-                                </div>
-
-                                <div className="card">
-
-                                    <h3>Execution Time</h3>
-
-                                    <p>
-
-                                        {result.execution_time} sec
-
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Agents Used
-
-                                </h3>
-
-                                <p>
-
-                                    {result.agent_count}
-
-                                </p>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Execution Workflow
-
-                                </h3>
-
-                                <div className="workflow">
-
-                                    {
-
-                                        result.plan.steps.map((step, index) => (
-
-                                            <div
-                                                key={index}
-                                                className="workflowStep"
-                                            >
-
-                                                <span className="stepNumber">
-
-                                                    {index + 1}
-
-                                                </span>
-
-                                                <span>
-
-                                                    {step.agent}
-
-                                                </span>
-
-                                            </div>
-
-                                        ))
-
-                                    }
-
-                                </div>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Review
-
-                                </h3>
-
-                                <p>
-
-                                    {result.review_result || "Not Required"}
-
-                                </p>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Failure Analysis
-
-                                </h3>
-
-                                <p>
-
-                                    <strong>File</strong>
-
-                                </p>
-
-                                <p>
-
-                                    {
-
-                                        result.failed_file ||
-
-                                        "No failure detected."
-
-                                }
-
-                                </p>
-
-                                <br />
-
-                                <p>
-
-                                    <strong>Debugger Analysis</strong>
-
-                                </p>
-
-                                <p>
-
-                                    {
-
-                                        result.debug_analysis ||
-
-                                        "Application executed successfully."
-
-                                    }
-
-                                </p>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Patch Information
-
-                                </h3>
-
-                                <p>
-
-                                    <strong>Status:</strong>{" "}
-
-                                    {
-
-                                        result.patch_success
-
-                                            ? "Applied Successfully"
-
-                                            : "Not Applied"
-
-                                    }
-
-                                </p>
-
-                                <br />
-
-                                <p>
-
-                                    <strong>Backup File</strong>
-
-                                </p>
-
-                                <p>
-
-                                    {
-
-                                        result.backup_file ||
-
-                                        "No backup created."
-
-                                    }
-
-                                </p>
-
-                            </div>
-
-                            <div className="card">
-
-                                <h3>
-
-                                    Code Changes
-
-                                </h3>
-
-                                <div className="diffContainer">
-
-                                    <div className="diffColumn">
-
-                                        <h4>
-
-                                            Generated Fix
-
-                                        </h4>
-
-                                        <pre>
-
-                                            {
-
-                                                result.generated_fix ||
-
-                                                "No fix generated."
-
-                                            }
-
-                                        </pre>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </section>
+                        </>
 
                     )
 
