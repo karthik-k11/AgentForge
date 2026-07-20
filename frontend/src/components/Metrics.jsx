@@ -1,4 +1,50 @@
+import { useEffect, useState } from "react";
+
 function Metrics({ result }) {
+
+        const [executionTime, setExecutionTime] = useState(0);
+
+        const [agentsUsed, setAgentsUsed] = useState(0);
+
+        useEffect(() => {
+
+            let time = 0;
+
+            let agents = 0;
+
+            const interval = setInterval(() => {
+
+                if (time < result.execution_time) {
+
+                    time += result.execution_time / 30;
+
+                    setExecutionTime(
+
+                        Math.min(
+
+                            time,
+
+                            result.execution_time
+
+                        )
+
+                    );
+
+                }
+
+                if (agents < result.agent_count) {
+
+                    agents++;
+
+                    setAgentsUsed(agents);
+
+                }
+
+            }, 35);
+
+            return () => clearInterval(interval);
+
+        }, [result]);
 
     return (
 
@@ -106,7 +152,11 @@ function Metrics({ result }) {
 
                     <h2 className="metricValue">
 
-                        {result.execution_time}s
+                        {
+
+                            executionTime.toFixed(3)
+
+                        } sec
 
                     </h2>
 
@@ -122,7 +172,11 @@ function Metrics({ result }) {
 
                     <h2 className="metricValue">
 
-                        {result.agent_count}
+                        {
+
+                            agentsUsed
+
+                        }
 
                     </h2>
 

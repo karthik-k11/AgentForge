@@ -10,7 +10,7 @@ function Navbar() {
 
                 <div className="logoIcon">
 
-                    ⚡
+                    AI
 
                 </div>
 
@@ -52,11 +52,21 @@ function Navbar() {
 
                 </a>
 
-                <button className="githubButton">
+                <a
 
-                    GitHub
+                    href="https://github.com/karthik-k11/AgentForge"
 
-                </button>
+                    target="_blank"
+
+                    rel="noopener noreferrer"
+
+                    className="githubButton"
+
+                >
+
+                    View on GitHub →
+
+                </a>
 
             </div>
 

@@ -1,3 +1,7 @@
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+
 function CodeViewer({ result }) {
 
     if (!result) {
@@ -57,17 +61,39 @@ function CodeViewer({ result }) {
 
                     </div>
 
-                    <pre className="editorBody">
+                    <SyntaxHighlighter
+
+                        language="python"
+
+                        style={oneDark}
+
+                        customStyle={{
+
+                            margin:0,
+
+                            height:"700px",
+
+                            borderRadius:0,
+
+                            fontSize:"15px",
+
+                            padding:"24px",
+
+                            background:"#020617"
+
+                        }}
+
+                    >
 
                         {
 
                             result.original_code ||
 
-                            "Original source unavailable."
+                            "# Original source unavailable."
 
                         }
 
-                    </pre>
+                    </SyntaxHighlighter>
 
                 </div>
 
@@ -93,17 +119,39 @@ function CodeViewer({ result }) {
 
                     </div>
 
-                    <pre className="editorBody">
+                    <SyntaxHighlighter
+
+                        language="python"
+
+                        style={oneDark}
+
+                        customStyle={{
+
+                            margin:0,
+
+                            height:"700px",
+
+                            borderRadius:0,
+
+                            fontSize:"15px",
+
+                            padding:"24px",
+
+                            background:"#020617"
+
+                        }}
+
+                    >
 
                         {
 
                             result.generated_fix ||
 
-                            "Generated code unavailable."
+                            "# Generated code unavailable."
 
                         }
 
-                    </pre>
+                    </SyntaxHighlighter>
 
                 </div>
 

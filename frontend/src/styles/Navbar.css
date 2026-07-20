@@ -166,6 +166,14 @@
 
     transition:.3s;
 
+    text-decoration:none;
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
 }
 
 .githubButton:hover{

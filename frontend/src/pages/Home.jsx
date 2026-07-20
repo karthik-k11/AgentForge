@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import InputPanel from "../components/InputPanel";
 import Metrics from "../components/Metrics";
-import WorkflowTimeline from "../components/WorkflowTimeline";
 import FailureAnalysis from "../components/FailureAnalysis";
 import PatchCard from "../components/PatchCard";
 import CodeViewer from "../components/CodeViewer";
@@ -24,6 +23,14 @@ function Home() {
 
     const [currentStep, setCurrentStep] = useState(0);
 
+    const [showMetrics, setShowMetrics] = useState(false);
+
+    const [showAnalysis, setShowAnalysis] = useState(false);
+
+    const [showPatch, setShowPatch] = useState(false);
+
+    const [showCode, setShowCode] = useState(false);
+
     const handleRun = async () => {
 
         if (!problem.trim()) {
@@ -37,6 +44,14 @@ function Home() {
         setLoading(true);
 
         setResult(null);
+
+        setShowMetrics(false);
+
+        setShowAnalysis(false);
+
+        setShowPatch(false);
+
+        setShowCode(false);
 
         setCurrentStep(0);
 
@@ -60,13 +75,33 @@ function Home() {
 
             const response = await runAgentForge(problem);
 
-            console.log(response);
-
             setResult(response);
 
-        }
+            setTimeout(() => {
 
-        catch (error) {
+                setShowMetrics(true);
+
+            }, 150);
+
+            setTimeout(() => {
+
+                setShowAnalysis(true);
+
+            }, 350);
+
+            setTimeout(() => {
+
+                setShowPatch(true);
+
+            }, 550);
+
+            setTimeout(() => {
+
+                setShowCode(true);
+
+            }, 750);
+
+        } catch (error) {
 
             console.error(error);
 
@@ -124,109 +159,129 @@ function Home() {
                     loading={loading}
 
                 />
-
                 {
 
-                    loading && (
+                    !loading &&
 
-                        <WorkflowTimeline
+                    !result && (
 
-                            steps={[
+                        <section className="emptyState fadeUp">
 
-                                {
+                            <div className="emptyCard">
+                        
+                                <div className="emptyLogo">
 
-                                    agent:"Planner",
+                                    AgentForge
 
-                                    action:"Understand the software problem."
+                                </div>
 
-                                },
+                                <h2>
 
-                                {
+                                    Ready to Debug
 
-                                    agent:"Explorer",
+                                </h2>
 
-                                    action:"Inspect the project structure."
+                                <p>
 
-                                },
+                                    Describe your Python software problem above and click
 
-                                {
+                                    <strong>
 
-                                    agent:"Executor",
+                                        {" "}Run AgentForge{" "}
 
-                                    action:"Execute the application."
+                                    </strong>
 
-                                },
+                                    to launch the autonomous AI debugging workflow.
 
-                                {
+                                </p>
 
-                                    agent:"Debugger",
+                                <div className="emptyFeatures">
 
-                                    action:"Analyze runtime failures."
+                                    <span>
 
-                                },
+                                        ✓ Runtime Analysis
 
-                                {
+                                    </span>
 
-                                    agent:"Code Generator",
+                                    <span>
 
-                                    action:"Generate an intelligent fix."
+                                        ✓ AI Code Generation
 
-                                },
+                                    </span>
 
-                                {
+                                    <span>
 
-                                    agent:"Reviewer",
+                                        ✓ Smart Patching
 
-                                    action:"Validate the generated solution."
+                                    </span>
 
-                                }
+                                    <span>
 
-                            ]}
+                                        ✓ Automatic Validation
 
-                            currentStep={currentStep}
+                                    </span>
 
-                        />
+                                </div>
+
+                            </div>
+
+                        </section>
 
                     )
 
                 }
-
                 {
 
                     result && (
 
                         <>
-                                                    <Metrics
+                                                    {
 
-                                result={result}
+                                                        showMetrics &&
 
-                            />
+                                                        <Metrics
 
-                            <WorkflowTimeline
+                                                            result={result}
 
-                                steps={result.plan.steps}
+                                                        />
 
-                                currentStep={result.plan.steps.length}
+                                                    }
 
-                            />
+                            {
 
-                            <FailureAnalysis
+                                showAnalysis &&
 
-                                result={result}
+                                <FailureAnalysis
 
-                            />
+                                    result={result}
 
-                            <PatchCard
+                                />
 
-                                result={result}
+                            }
 
-                            />
+                            {
 
-                            <CodeViewer
+                                showPatch &&
 
-                                result={result}
+                                 <PatchCard
 
-                            />
+                                    result={result}
+
+                                />
+
+                            }
+
+                            {
+
+                                showCode &&
+
+                                <CodeViewer
+
+                                    result={result}
+
+                                />
+
+                            }
 
                         </>
 
