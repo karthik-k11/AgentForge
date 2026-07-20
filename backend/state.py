@@ -28,6 +28,8 @@ def create_workflow_state():
 
         "failed_line": None,
 
+        "original_code": "",
+
         "execution_metadata": {},
 
         "execution_history": [],

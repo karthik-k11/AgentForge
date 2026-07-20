@@ -71,6 +71,42 @@ def execute_step(step, workflow_state):
 
         workflow_state["failed_line"] = failed_line
 
+        try:
+
+            if failed_file:
+
+                with open(
+
+                    failed_file,
+
+                    "r",
+
+                    encoding="utf-8"
+
+                ) as file:
+
+                    workflow_state[
+
+                        "original_code"
+
+                    ] = file.read()
+
+            else:
+
+                workflow_state[
+
+                    "original_code"
+
+                ] = ""
+
+        except Exception:
+
+            workflow_state[
+
+                "original_code"
+
+            ] = ""
+
         return result
 
     elif agent_name == "Debugger":

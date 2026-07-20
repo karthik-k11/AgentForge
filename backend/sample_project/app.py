@@ -1,1 +1,1 @@
-print(username)
+username = "default_username"

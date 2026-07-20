@@ -164,8 +164,9 @@ def run_workflow(
         ],
 
         "original_code":
+
         workflow_state[
-            "project_context"
+            "original_code"
         ],
 
         "debug_analysis": workflow_state[
