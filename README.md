@@ -346,3 +346,4 @@ Patch Applied Successfully
 - WebSocket Live Execution Updates
 
 ---
+Author
