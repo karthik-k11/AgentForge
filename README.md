@@ -344,6 +344,3 @@ Patch Applied Successfully
 - Project-Level Debugging
 - Automatic Dependency Installation
 - WebSocket Live Execution Updates
-
----
-Author
