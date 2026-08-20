@@ -6,10 +6,7 @@ from codegen import code_generator_agent
 from reviewer import reviewer_agent
 from patcher import apply_patch
 from validator import validate_python_code
-from error_parser import (
-    extract_error_file,
-    extract_error_line
-)
+from error_parser import extract_error_file, extract_error_line
 from permissions import is_patch_allowed
 
 def execute_step(step, workflow_state):
