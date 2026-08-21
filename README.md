@@ -33,6 +33,33 @@ AgentForge is an AI-powered software debugging system that autonomously analyzes
 
 ---
 
+## Screenshots
+
+### AgentForge Dashboard
+
+![AgentForge Dashboard](images/home.png)
+
+### Explaining Problem
+
+![describing problem](images/describing-problem.png)
+
+### Multi-Agent Execution
+
+![Agent Execution](images/progress.png)
+
+### Execution Summary
+
+![Execution Summary](images/execution-summary.png)
+
+### Debugger Analysis
+![debugger analysis](images/debugger-analysis.png)
+
+### Patch Information
+
+![Patch Information](images/patch-information.png)
+
+---
+
 ## Multi-Agent Workflow
 
 ### Planner Agent
